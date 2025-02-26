@@ -1,0 +1,55 @@
+#include <stdio.h>
+#include<stdlib.h>
+
+struct NODE{
+    int data;
+    struct NODE *ptr;
+};
+
+typedef struct NODE node;
+
+void insertatbeg(node* temp,node* head){
+    node* newnode=(node*)malloc(sizeof(node));
+    printf("data:");
+    scanf("%d",&newnode->data);
+    if (head==NULL){
+        head=newnode;
+        newnode->ptr=newnode;
+    }
+    else{
+    temp->ptr=newnode;
+    newnode->ptr=head;
+    head=newnode;
+    }
+}
+int main(){
+    node *head=NULL,*temp; 
+    int choice=1;
+    while(choice){
+        node *newnode=(node*)malloc(sizeof(node));
+        printf("Enter data:");
+        scanf("%d",&newnode->data);
+        newnode->ptr=NULL;
+        if (head==NULL){
+            head=temp=newnode;
+            temp->ptr=head;
+
+        }
+        else{
+            temp->ptr=newnode;
+            temp=newnode;
+            temp->ptr=head;
+        }
+    printf("do you want to continue?(0/1)");
+    scanf("%d",&choice);
+    }
+    //display
+    temp=head;
+    if (head!=NULL){
+    do{
+        printf("%d->",temp->data);
+        temp=temp->ptr;
+    }while(temp!=head);
+    printf("(Back to start)\n");}   
+    return 0;
+}
