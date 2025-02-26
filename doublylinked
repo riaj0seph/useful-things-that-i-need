@@ -1,67 +1,90 @@
 #include <stdio.h>
-#include <stdlib.h>
+#include<stdlib.h>
 
-struct Node {
+struct NODE{
     int data;
-    struct Node* prev;
-    struct Node* next;
+    struct NODE *fwd,*bwd;
+};
+typedef struct NODE node;
+
+int display(node* head){
+   //display
+   node *temp;
+   temp=head;
+   while(temp->fwd!=NULL){
+    printf("%d<->",temp->data);
+    temp=temp->fwd;
+   };
+   printf("%d",temp->data);
+   return 0;
+}
+
+void insertAtBeginning(node** head){
+   printf("Enter data");
+   node *newnode=(node*)malloc(sizeof(node));
+   scanf("%d",&newnode->data);
+   (*head)->bwd=newnode;
+   newnode->fwd=*head;
+   newnode->bwd=NULL;
+   *head=newnode;
 };
 
-struct Node* createNode(int data) {
-    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
-    newNode->data = data;
-    newNode->prev = NULL;
-    newNode->next = NULL;
-    return newNode;
-}
-
-void append(struct Node** head_ref, int data) {
-    struct Node* newNode = createNode(data);
-    struct Node* current = *head_ref;
+void insertAtEnd(node** temp){
+    node* newnode=(node*)malloc(sizeof(node));
+    printf("Enter data:");
+    scanf("%d",&newnode->data);
+    (*temp)->fwd=newnode;
+    newnode->bwd=*temp;
+    newnode->fwd=NULL;
     
-    if (*head_ref == NULL) {
-        *head_ref = newNode;
-        return;
-    }
-    
-    while (current->next != NULL) {
-        current = current->next;
-    }
-    current->next = newNode;
-    newNode->prev = current;
 }
 
-void display(struct Node* node) {
-    struct Node* last;
-    printf("Forward traversal: ");
-    while (node != NULL) {
-        printf("%d ", node->data);
-        last = node;
-        node = node->next;
+void Reversedoubly(node** head,node** last){
+    node* temp=*head,*help;
+    *last=temp;
+    while(temp->fwd!=NULL){
+        help=temp->bwd;
+        temp->bwd=temp->fwd;
+        temp->fwd=help;
+        temp=temp->bwd;
     }
-    printf("\n");
+    help=temp->bwd;
+    temp->bwd=temp->fwd;
+    temp->fwd=help;
+    *head=temp;    
 }
 
-int main() {
-    struct Node* head = NULL;
-    int data;
-    char choice;
-
-    printf("Enter elements to add to the doubly linked list (Enter 'q' to quit):\n");
-    while (1) {
-        printf("Enter data: ");
-        if (scanf("%d", &data) != 1) {
-            break;
-        }
-        append(&head, data);
-
-        printf("Do you want to add another element (y/n)? ");
-        scanf(" %c", &choice);
-        if (choice == 'n' || choice == 'N') {
-            break;
-        }
+int main(){
+   int choice=1;
+   node *head=NULL,*temp,*newnode;
+   while(choice){
+    newnode=(node*)malloc(sizeof(node));
+    printf("Data:");
+    scanf("%d",&newnode->data);
+    if (head==NULL){
+       head=temp=newnode;
+       newnode->bwd=NULL;
+       newnode->fwd=NULL;  
     }
+    else{
+        temp->fwd=newnode;
+        newnode->bwd=temp;
+        newnode->fwd=NULL;
+        temp=newnode;
+    }
+    printf("Do you wish to continue?");
+    scanf("%d",&choice);
+   }
+   display(head);
+   printf("\nInsert at beginning\n");
+   insertAtBeginning(&head);
+   display(head);
+   printf("\nInsert at end\n");
+   insertAtEnd(&temp);
+   display(head);
+   printf("\n");
+   Reversedoubly(&head,&temp);
+   display(head);
+   return 0;}
 
-    display(head);
-    return 0;
-}
+ 
