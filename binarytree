@@ -1,0 +1,79 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct tree{
+    int data;
+    struct tree* left,*right;
+}node;
+
+
+node* createnode(){
+    node* newnode;
+    int data;
+    printf("Enter data\n");
+    scanf("%d",&data);
+    newnode=(node*)malloc(sizeof(node));
+    newnode->data=data;
+    newnode->left=NULL;
+    newnode->right=NULL;
+    return newnode;
+}
+
+node* createtree(node** root){
+    node* newnode;
+    int left=0,right=0;
+        newnode=createnode();
+        if (*root==NULL){
+            *root=newnode;
+        }
+        printf("Create a left node for %d ?\n",newnode->data);
+        scanf("%d",&left);
+        printf("Create a right node for %d ?\n",newnode->data);
+        scanf("%d",&right);
+        if (left==0 && right==0){
+           printf("This one %d is a leaf node! \n",newnode->data);
+        }
+        else{
+        if(left){
+            printf("Left node of %d ",newnode->data);
+            newnode->left=createtree(&newnode->left);
+        }
+        if (right){
+            printf("Right node of %d ",newnode->data);
+            newnode->right=createtree(&newnode->right);
+        }}
+        
+    return newnode;
+}
+
+void displaytree(node* root){
+    if(root!=NULL){
+     printf("%d\n ",root->data);
+     if(root->left!=NULL){
+        printf("Left of %d is: \n",root->data);
+        displaytree(root->left);
+     }
+     if(root->right!=NULL){
+        printf("Right of %d is: \n",root->data);
+        displaytree(root->right);
+     }
+    }
+    else{printf("Empty tree");}
+}
+
+int maxdepth(node* root){
+    if (root==NULL){
+        return 0;
+    }
+    else{
+    return ((maxdepth(root->left)>maxdepth(root->right))?maxdepth(root->left):maxdepth(root->right))+1;
+    }
+}
+int main(){
+    int choice=1,data;
+    node *root=NULL;
+    root=createtree(&root);
+    displaytree(root);
+    printf("Depth: %d",maxdepth(root));
+    return 0;
+}
