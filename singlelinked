@@ -1,0 +1,34 @@
+//singly linked list creation code
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node{
+  int data;
+  struct Node* next;
+ }node;
+
+void createnode(node* newnode){
+printf("Enter data: \n");
+scanf("%d",&newnode->data);
+newnode->next=NULL;
+}
+
+void createlinkdlist(node** header){
+//creation of a linked list
+int choice=1;
+*header=NULL;
+node* previous=NULL;
+while(choice){
+node* newnode=(node*)malloc(sizeof(node));
+createnode(newnode);
+if (*header==NULL){
+*header=newnode;
+}
+else{
+previous->next=newnode;
+}
+previous=newnode;
+printf("Do you want to continue? (0/1) \n");
+scanf("%d",&choice);
+}
+}
