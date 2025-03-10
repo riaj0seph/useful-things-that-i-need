@@ -1,0 +1,195 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+typedef struct Node{
+    int info;
+    int height;
+    struct Node *left,*right;
+}node;
+
+node* createnode(int data){
+    node *newnode=new node();
+    newnode->info=data;
+    newnode->left=NULL;
+    newnode->right=NULL;
+    newnode->height=1;
+    return newnode;
+}
+
+int height(node* noode){
+  int height;
+  if(noode==NULL){
+    return 0;
+  }
+  else{
+    return noode->height;
+  }
+}  //because in the bf ftn, if a node is null we'd want height to be zero so to have that happen, that is done only via ftn
+
+int balancefactor(node* root){
+  int bf;
+  if(root!=NULL){
+    bf=height(root->left)-height(root->right);
+    return bf;
+  }
+  return 0;
+}
+
+node* LL_rotation(node* root){
+  node* newroot=root->left;
+  root->left=newroot->right;
+  newroot->right=root;
+  root=newroot;
+  root->right->height=1+max(root->right->left->height,root->right->right->height);
+  root->height=1+max(root->left->height,root->right->height);
+  return root;
+}
+node* RR_rotation(node* root){
+  node* newroot=root->right;
+  root->right=newroot->left;
+  newroot->left=root;
+  root=newroot;
+  root->left->height=1+max(root->left->left->height,root->left->right->height);
+  root->height=1+max(root->left->height,root->right->height);
+  return root;
+}
+
+void insertionAVL(node* root,int data){
+//find position of addition
+   if(root==NULL){
+    root=createnode(data);
+    }
+   else{
+   if(data<root->info){
+      //insert to left
+        insertionAVL(root->left,data);
+      }
+   else if (data>root->info){
+      //insert to right
+        insertionAVL(root->right,data);
+      }
+   else{
+    cout<<"Data is already present in the tree";
+    return;
+      }
+   }
+
+    root->height=1+max(height(root->left),height(root->right));
+    int bf;
+    bf=balancefactor(root);
+    if(bf<-1){
+      //RR
+      if(data>(root->right->info)){
+        root=RR_rotation(root);
+      }
+      //RL
+      else if(data<(root->right->info)){
+        root->right=LL_rotation(root->right);
+        root=RR_rotation(root);
+      }
+    }
+    else if(bf>1){
+      //LL
+      if(data<(root->left->info)){
+        root=LL_rotation(root);
+      }
+      //LR
+      if(data>(root->left->info)){
+        root->left=RR_rotation(root->left);
+        root=LL_rotation(root);
+      }
+    }
+
+}
+
+int deletioncondn(node* node){
+  if(node->left==NULL && node->right ==NULL){
+    //no kids
+    return 0;
+  }
+  else if(node->left==NULL ^ node->right==NULL){
+    //1 kid
+    return 1;
+  }
+  else{ return 2;}
+
+}
+void inorder(node* root,vector <int> *arr){
+  if (root!=NULL){
+   inorder(root->left,arr);
+   arr->push_back(root->info);
+   inorder(root->right,arr);
+  }
+}
+
+void deletionAVL(node* root,int data,node* originalroot){
+  if(root!=NULL){
+    if(root->left->info==data && root->left!=NULL){
+      //delete this current
+      node* current=root->left;
+      root->height=1+max(height(current),height(root->right));
+      int condn=deletioncondn(current);
+      switch(condn){
+            case 0:
+            //no replacement
+            root->left=NULL;
+            //check if rotation
+            break;
+            case 1:
+            //1 kid, replace with this
+            if(current->left!=NULL){
+              current=current->left;
+            }
+            else if(current->right!=NULL){
+              current=current->right;
+            }
+            //check for rotation
+            break;
+            case 2:
+             int max;
+             vector<int>inord;
+             inorder(originalroot,&inord);
+             for(int i=0;i<inord.size();i++){
+              if(inord[i]==data){
+                max=inord[i+1];
+                deletionAVL(root,inord[i+1],originalroot);
+              }
+             }
+             //replace current w max
+             current->info=max;
+            //rotate
+            break;
+
+      } 
+    }
+    else if(root->right->info==data && root->right!=NULL){
+      //delete this
+      node* current=root->right;
+      int condn=deletioncondn(current);
+      switch(condn){
+            
+      } 
+    }
+    else{
+      if(root->left!=NULL){
+      deletionAVL(root->left,data,originalroot);
+    }
+      if(root->right!=NULL){
+      deletionAVL(root->right,data,originalroot);
+    }
+    }
+  }
+  root->height=1+max(height(root->left),height(root->right));
+}
+
+int main(){
+  node* root=new node();
+  root=NULL;
+  insertionAVL(root,4);
+  insertionAVL(root,65);
+  insertionAVL(root,34);
+  insertionAVL(root,1);
+  insertionAVL(root,89);
+  vector <int> inord;
+  inorder(root,&inord);
+}
