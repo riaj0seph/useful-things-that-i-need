@@ -1,0 +1,96 @@
+#include <bits/stdc++.h>
+
+//NEEDS TO BE CHECKED
+
+typedef struct NODE{
+    float probability;
+    int code;
+    char charac;
+    struct NODE *left,*right;
+}node;
+
+using namespace std;
+
+void bubblesort(vector<float>*arr,vector<char>*arrc){
+    for(int i=0;i<arr->size()-1;i++){
+        for(int j=0;j<arr->size()-1-i;j++){
+            if((*arr)[j]>(*arr)[j+1]){
+                swap((*arr)[j],(*arr)[j+1]);
+                swap((*arrc)[j],(*arrc)[j+1]);
+            }
+        }
+    }
+}//sort in ascending
+
+void preorderdisplaytree(node* root){
+    if(root!=NULL){
+    if (root->charac != '\0') { // Only print leaf nodes
+            cout << root->charac << " -> " << root->code << endl;
+        }
+    preorderdisplaytree(root->left);
+    preorderdisplaytree(root->right);
+    }
+}
+node* buildtree(vector<float>*arr,vector<char>*arrc){
+    if((*arr).size()>=2){
+        node* newnode1 = new node{ (*arr)[0], -1, (*arrc)[0], nullptr, nullptr};
+        (*arr).erase((*arr).begin());
+        (*arrc).erase((*arrc).begin());
+      
+        node* newnode2 = new node{ (*arr)[0], -1, (*arrc)[0], nullptr, nullptr};
+   
+        (*arr).erase((*arr).begin());
+        (*arrc).erase((*arrc).begin());
+        //combine these two
+        node* newnode3 = new node{newnode1->probability+newnode2->probability, -1, '\0', newnode1,newnode2};
+        (*arr).insert((*arr).begin(),newnode3->probability);
+        (*arrc).insert((*arrc).begin(),newnode3->charac);
+        bubblesort(arr,arrc);
+        return buildtree(arr,arrc);
+    }
+    else{
+        node* newnode1 = new node{(*arr)[0], -1, (*arrc)[0], nullptr,nullptr};
+        return newnode1;
+    }
+}
+
+void huffmanassign(node* root){
+    if(root!=NULL){
+        if(root->left!=NULL){
+            root->left->code=1;
+        }
+        if(root->right!=NULL){
+            root->right->code=0;
+        }
+        huffmanassign(root->left);
+        huffmanassign(root->right);
+    }
+}
+
+int main(){
+    string str="helloworld";
+    map<char,int>mp;
+    for(int i=0;i<str.length();i++){
+        if(mp.find(str[i])==mp.end()){
+            mp[str[i]]=0;
+        }
+        mp[str[i]]++;
+    }
+    int total=0;
+    for(auto itr=mp.begin();itr!=mp.end();itr++){
+        total+=itr->second;
+    }
+    //mp has character and probability;
+    vector<float>prob;
+    vector<char>characlist;
+    for(auto itr=mp.begin();itr!=mp.end();itr++){
+        characlist.push_back(itr->first);
+        float probab=(float)itr->second/total;
+        prob.push_back(probab);
+    }
+    bubblesort(&prob,&characlist);
+    //we now have a vector with sorted probabilities in asc and their respective characters in the other vector
+    node* root=buildtree(&prob,&characlist);
+    huffmanassign(root);
+    preorderdisplaytree(root);
+}
