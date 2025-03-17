@@ -1,0 +1,59 @@
+#include <stdio.h>
+#include <stdlib.h>
+int isEmpty(int* freeposition){
+if (*freeposition==0){
+printf("Stack is empty\n");
+return 1;
+}
+else{
+return 0;
+}
+}
+
+int isFull(int* freeposition,int n){
+if (*freeposition==n){
+printf("Stack is full \n ");
+return 1;
+}
+else{
+return 0;
+}
+}
+
+void Push(char* stack,char x,int n,int* freeposition){
+if (isFull(freeposition,n)){
+printf("Cannot perform push\n");
+}
+else{
+       stack[*freeposition]=x;
+       *freeposition+=1;
+}
+
+}
+
+
+char Pop(char* stack,int* freeposition){
+if (isEmpty(freeposition)){
+printf("Cannot pop element\n");
+return '\0';
+}
+else{
+*freeposition-=1;
+char popped=stack[*freeposition];
+   stack[*freeposition]=0;
+   return popped;
+
+}
+}
+
+char Peek(char* stack,int* freeposition){
+if (isEmpty(freeposition)){
+printf("Stack is empty\n");
+return '\0';
+}
+else{
+return stack[*freeposition-1];
+}
+
+}
+
