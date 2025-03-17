@@ -1,0 +1,49 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+void enqueue(int* q,int data,int *rear,int n){
+   if (*rear==n-1){
+        printf("OVERFLOW\n");
+        return;
+   }
+   else{
+    (*rear)++;
+    q[*rear]=data;
+    return;
+   }
+}
+
+void dequeue(int*q,int *front, int *rear){
+    if (*front>*rear){
+        printf("UNDERFLOW\n");
+    }
+    else{
+        q[*front]=0;
+        (*front)++;
+    }
+
+}
+int main(){
+    int *queue,n;
+    printf("Enter size\n");
+    scanf("%d",&n);
+    queue=(int*)malloc(n*sizeof(int));
+    int i=0,front=0,rear=-1,choice=1;
+    while(choice){
+        printf("Enter data\n");
+        int data;
+        scanf("%d",&data);
+        enqueue(queue,data,&rear,n);
+        printf("Continue?");
+        scanf("%d",&choice);
+       
+    }
+    dequeue(queue,&front,&rear);
+    //print queue
+    while(front<=rear){
+        printf("%d\n",queue[front]);
+        front++;
+    }
+  return 0;
+}
+
