@@ -1,0 +1,48 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+void Quicksort(int *array,int start,int end){
+ if(end-start+1>=2){
+    printf("hey");
+   int pivot=array[start];
+   int pivotindex=start;
+   int leftptr=start;
+   int rightptr=end;
+   while(array[rightptr]!=pivot || array[leftptr]!=pivot){
+     leftptr=start;
+     rightptr=end;
+     while(array[rightptr]!=pivot){
+         if(array[rightptr]<pivot){
+             swap(array[pivotindex],array[rightptr]);
+             pivotindex=rightptr;
+             break;}
+        rightptr--; }
+
+     while(array[leftptr]!=pivot){
+         if(array[leftptr]>pivot){
+             swap(array[pivotindex],array[leftptr]);
+             pivotindex=leftptr;
+             break;}
+         leftptr++; }
+     }
+
+    Quicksort(array,start,pivotindex-1);
+    Quicksort(array,pivotindex+1,end);
+   }
+}
+
+int main() {
+    // Test the quicksort implementation
+    int array[] = {10, 7, 8, 3, 1, 5};
+    int n = sizeof(array) / sizeof(array[0]);
+
+    Quicksort(array, 0, n - 1);
+
+    cout << "Sorted array: ";
+    for (int i = 0; i < n; i++) {
+        cout << array[i] << " ";
+    }
+    cout << endl;
+
+    return 0;
+}
